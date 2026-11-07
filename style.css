@@ -1,0 +1,7 @@
+.container {
+    display: flex;
+    background-color: DodgerBlue;
+    width: 500px;
+    height: 500px;
+    margin: auto
+}
