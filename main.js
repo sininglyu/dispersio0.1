@@ -17,21 +17,28 @@ function getSvgCoords(e) {
     svgCoords.y = - svgCoords.y.toFixed(1);
     svgCoords.x = svgCoords.x.toFixed(1);
 
+    return svgCoords;
+}
 
-    return svgCoords
+// helper function to check if coords are in bounds. Returns boolean
+function inBounds(coords) {
+    if (coords.x <= 60 && coords.x >= -60 && coords.y >= -60 && coords.y <= 60) {
+        return true;
+    }
+    return false;
 }
 
 // function that shows what coordinate the mouse is at
 function displayCoords(e) {
     const svgCoords = getSvgCoords(e);
 
-    if (svgCoords.x <= 60 && svgCoords.x >= -60 && svgCoords.y >= -60 && svgCoords.y <= 60) {
+    if (inBounds(svgCoords)) {
         coordsLog.innerText = 
         "X: " + svgCoords.x +
         " Y: " + svgCoords.y 
     } 
     else {
-        coordsLog.innerText = ""
+        coordsLog.innerText = " "
     }
 }
 
@@ -39,8 +46,10 @@ function displayCoords(e) {
 function logCoords(e) {
     let svgCoords = getSvgCoords(e);
 
-    coordsSaved.innerText += 
-    "X: " + svgCoords.x +
-    " Y: " + svgCoords.y +
-    "\n"
+    if (inBounds(svgCoords)) {
+        coordsSaved.innerText += 
+        "X: " + svgCoords.x +
+        " Y: " + svgCoords.y +
+        "\n"
+    }
 }
