@@ -1,7 +1,12 @@
 .container {
     display: flex;
-    background-color: DodgerBlue;
+    background-color: rgb(209, 209, 209);
     width: 500px;
     height: 500px;
     margin: auto
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+  display: none;
 }
