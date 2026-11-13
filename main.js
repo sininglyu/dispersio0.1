@@ -12,6 +12,7 @@ const coordsList = [];
 const circlesList = [];
 let pendingCoords = null;
 let editingShot = false;
+let curShot = null;
 
 // helper function to get svgCoords. Returns a point
 function getSvgCoords(e) {
@@ -20,7 +21,7 @@ function getSvgCoords(e) {
     // get transformation of screen to svg, inverse to get svg to screen
     const svgCoords = pt.matrixTransform(svg.getScreenCTM().inverse());
     svgCoords.y = - svgCoords.y.toFixed(1);
-    svgCoords.x = + svgCoords.x.toFixed(1);
+    svgCoords.x = Number(svgCoords.x.toFixed(1));
 
     return svgCoords;
 }
@@ -59,8 +60,8 @@ function displayCoords(e) {
 // logging, the meat of this program
 function logCoords(e) {
     if (e.target.tagName == "circle") return;
-    let svgCoords = getSvgCoords(e);
 
+    let svgCoords = getSvgCoords(e);
     if (inBounds(svgCoords)) {
         editShot(e, svgCoords);
     }   
@@ -68,8 +69,12 @@ function logCoords(e) {
 
 // Edit shot by popping up a form
 function editShot(e, svgCoords) {
+    editingShot = false;
+    curShot = null;
+
     if (e.target.tagName == "circle") {
         editingShot = true;
+        curShot = e.target;
     }
 
     pendingCoords = svgCoords;
@@ -80,16 +85,47 @@ function editShot(e, svgCoords) {
 
 function submitShot(e) {
     e.preventDefault();
+
+    console.log("test");
+
     const x = document.querySelector("input[name=xval]").value || pendingCoords.x;
     const y = document.querySelector("input[name=yval]").value || pendingCoords.y;  
 
-    coordsSaved.innerText += 
-        "X: " + x +
-        " Y: " + y +
-        "\n"
+    if (editingShot) {
+        plotCircle({x: x, y: y});
+
+        let index = -1;
+
+        for (let i = 0; i < coordsList.length; i++) {
+            if (coordsList[i][0] == pendingCoords.x && coordsList[i][1] == pendingCoords.y) {
+                index = i;
+                break;
+            }
+        }
+
+        console.log(index);
+
+        if (index != -1) {
+            coordsList[index] = [x, y];
+            console.log(coordsList);
+            coordsSaved.children[index].innerText = "X: " + x + " Y: " + y;
+        }
+
+        svg.removeChild(curShot);
+        console.log("editing shot");  
+        shotForm.style.display = "none";
+        shotForm.reset();
+        return false;
+    }
+
+    const p = document.createElement("p");
+    p.innerText = "X: " + x + " Y: " + y;
+    coordsSaved.appendChild(p);
+
     plotCircle({x: x, y: y});
     coordsList.push([x, y])
 
     console.log("submitting");  
     shotForm.style.display = "none";
+    shotForm.reset();
 }
