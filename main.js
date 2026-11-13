@@ -2,12 +2,16 @@
 const coordsLog = document.getElementById("coords");
 let coordsSaved = document.getElementById("coords-list");
 const svg = document.querySelector("svg");
+const shotForm = document.getElementById("myForm");
 
+shotForm.addEventListener("submit", submitShot);
 document.addEventListener("mousemove", displayCoords);
-document.addEventListener("click", logCoords);
+svg.addEventListener("click", logCoords);
 
 const coordsList = [];
 const circlesList = [];
+let pendingCoords = null;
+let editingShot = false;
 
 // helper function to get svgCoords. Returns a point
 function getSvgCoords(e) {
@@ -33,7 +37,7 @@ function plotCircle(coords) {
     circle.setAttribute("cy", -coords.y);
     circle.setAttribute("fill", "red");
 
-    circle.addEventListener("click", editShot);
+    circle.addEventListener("click", (e) => editShot(e, coords));
     svg.appendChild(circle);
     circlesList.push(circle);
 }
@@ -52,22 +56,40 @@ function displayCoords(e) {
     }
 }
 
-// logging 
+// logging, the meat of this program
 function logCoords(e) {
     if (e.target.tagName == "circle") return;
     let svgCoords = getSvgCoords(e);
 
     if (inBounds(svgCoords)) {
-        coordsSaved.innerText += 
-        "X: " + svgCoords.x +
-        " Y: " + svgCoords.y +
-        "\n"
-        plotCircle(svgCoords);
-        coordsList.push([svgCoords.x, svgCoords.y])
+        editShot(e, svgCoords);
     }   
 }
 
 // Edit shot by popping up a form
-function editShot(e) {
-    document.getElementById("myForm").style.display = "block";
+function editShot(e, svgCoords) {
+    if (e.target.tagName == "circle") {
+        editingShot = true;
+    }
+
+    pendingCoords = svgCoords;
+    shotForm.style.display = "block";
+    document.querySelector("input[name=xval]").placeholder = svgCoords.x;
+    document.querySelector("input[name=yval]").placeholder = svgCoords.y;
+}
+
+function submitShot(e) {
+    e.preventDefault();
+    const x = document.querySelector("input[name=xval]").value || pendingCoords.x;
+    const y = document.querySelector("input[name=yval]").value || pendingCoords.y;  
+
+    coordsSaved.innerText += 
+        "X: " + x +
+        " Y: " + y +
+        "\n"
+    plotCircle({x: x, y: y});
+    coordsList.push([x, y])
+
+    console.log("submitting");  
+    shotForm.style.display = "none";
 }
