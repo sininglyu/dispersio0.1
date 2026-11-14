@@ -46,6 +46,11 @@ function plotCircle(coords) {
     circle.setAttribute("cx", coords.x);
     circle.setAttribute("cy", -coords.y);
     circle.setAttribute("fill", "red");
+    circle.setAttribute("id", "shot");
+
+    if (addingShot) {
+        circle.style.opacity = "0.5";
+    }
     
     circle.addEventListener("click", (e) => editShot(e, coords));
     svg.appendChild(circle);
@@ -85,9 +90,12 @@ function editShot(e, svgCoords) {
     editingShot = false;
     curShot = null;
 
-    if (e.target.tagName == "circle") {
+    if (e.target.tagName == "circle" && !addingShot) {
         editingShot = true;
         curShot = e.target;
+
+        e.target.style.stroke = "yellow";
+        e.target.style.strokeWidth = "1";
     }
 
     pendingCoords = svgCoords;
@@ -137,10 +145,10 @@ function submitShot(e) {
     coordsSaved.appendChild(p);
 
     svg.removeChild(circlesList.pop());
+    addingShot = false;
     plotCircle({x: x, y: y});
     coordsList.push([x, y])
 
-    console.log("submitting");  
     shotForm.style.display = "none";
     addingShot = false;
     shotForm.reset();
