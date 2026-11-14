@@ -7,12 +7,14 @@ const shotForm = document.getElementById("myForm");
 shotForm.addEventListener("submit", submitShot);
 document.addEventListener("mousemove", displayCoords);
 svg.addEventListener("click", logCoords);
+document.getElementById("btn-cancel").addEventListener("click", closeForm);
 
 const coordsList = [];
 const circlesList = [];
 let pendingCoords = null;
 let editingShot = false;
 let curShot = null;
+let addingShot = false;
 
 // helper function to get svgCoords. Returns a point
 function getSvgCoords(e) {
@@ -31,13 +33,20 @@ function inBounds(coords) {
     return Math.abs(coords.x) <= 60 && Math.abs(coords.y) <= 60;
 }
 
+function closeForm() {
+    svg.removeChild(circlesList.pop());
+    shotForm.style.display = "none";
+    addingShot = false;
+    shotForm.reset();
+}
+
 function plotCircle(coords) {
     const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     circle.setAttribute("r", 1.5);
     circle.setAttribute("cx", coords.x);
     circle.setAttribute("cy", -coords.y);
     circle.setAttribute("fill", "red");
-
+    
     circle.addEventListener("click", (e) => editShot(e, coords));
     svg.appendChild(circle);
     circlesList.push(circle);
@@ -62,9 +71,13 @@ function logCoords(e) {
     if (e.target.tagName == "circle") return;
 
     let svgCoords = getSvgCoords(e);
-    if (inBounds(svgCoords)) {
-        editShot(e, svgCoords);
-    }   
+    if (!addingShot) {
+        if (inBounds(svgCoords)) {
+            addingShot = true;
+            plotCircle(svgCoords);
+            editShot(e, svgCoords);
+        }   
+    }
 }
 
 // Edit shot by popping up a form
@@ -115,6 +128,7 @@ function submitShot(e) {
         console.log("editing shot");  
         shotForm.style.display = "none";
         shotForm.reset();
+        addingShot = false;
         return false;
     }
 
@@ -122,10 +136,12 @@ function submitShot(e) {
     p.innerText = "X: " + x + " Y: " + y;
     coordsSaved.appendChild(p);
 
+    svg.removeChild(circlesList.pop());
     plotCircle({x: x, y: y});
     coordsList.push([x, y])
 
     console.log("submitting");  
     shotForm.style.display = "none";
+    addingShot = false;
     shotForm.reset();
 }
