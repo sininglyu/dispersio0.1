@@ -1,8 +1,9 @@
-// get coordinate of mouse 
+// get coordinate of mouse
 const coordsLog = document.getElementById("coords");
 let coordsSaved = document.getElementById("coords-list");
 const svg = document.querySelector("svg");
 const shotForm = document.getElementById("myForm");
+const formContainer = document.getElementsByClassName("form-popup");
 
 shotForm.addEventListener("submit", submitShot);
 document.addEventListener("mousemove", displayCoords);
@@ -37,6 +38,8 @@ function closeForm() {
     svg.removeChild(circlesList.pop());
     shotForm.style.display = "none";
     addingShot = false;
+    editingShot = false;
+    curShot = null;
     shotForm.reset();
 }
 
@@ -51,7 +54,7 @@ function plotCircle(coords) {
     if (addingShot) {
         circle.style.opacity = "0.5";
     }
-    
+
     circle.addEventListener("click", (e) => editShot(e, coords));
     svg.appendChild(circle);
     circlesList.push(circle);
@@ -62,10 +65,10 @@ function displayCoords(e) {
     const svgCoords = getSvgCoords(e);
 
     if (inBounds(svgCoords)) {
-        coordsLog.innerText = 
+        coordsLog.innerText =
         "X: " + svgCoords.x +
-        " Y: " + svgCoords.y 
-    } 
+        " Y: " + svgCoords.y
+    }
     else {
         coordsLog.innerText = " "
     }
@@ -76,30 +79,38 @@ function logCoords(e) {
     if (e.target.tagName == "circle") return;
 
     let svgCoords = getSvgCoords(e);
-    if (!addingShot) {
+    if (!addingShot && !editingShot) {
         if (inBounds(svgCoords)) {
             addingShot = true;
             plotCircle(svgCoords);
             editShot(e, svgCoords);
-        }   
+        }
     }
 }
 
 // Edit shot by popping up a form
 function editShot(e, svgCoords) {
+    if (e.target.tagName == "circle" && addingShot) return;
+    if (e.target.tagName == "circle" && editingShot) return;
+
+
     editingShot = false;
     curShot = null;
 
-    if (e.target.tagName == "circle" && !addingShot) {
+    if (e.target.tagName == "circle") {
         editingShot = true;
         curShot = e.target;
-
         e.target.style.stroke = "yellow";
         e.target.style.strokeWidth = "1";
-    }
+    } 
 
     pendingCoords = svgCoords;
     shotForm.style.display = "block";
+
+    const offset = 15;
+    shotForm.style.left = `${e.pageX + offset}px`;
+    shotForm.style.top = `${e.pageY - offset}px`;
+
     document.querySelector("input[name=xval]").placeholder = svgCoords.x;
     document.querySelector("input[name=yval]").placeholder = svgCoords.y;
 }
@@ -110,7 +121,7 @@ function submitShot(e) {
     console.log("test");
 
     const x = document.querySelector("input[name=xval]").value || pendingCoords.x;
-    const y = document.querySelector("input[name=yval]").value || pendingCoords.y;  
+    const y = document.querySelector("input[name=yval]").value || pendingCoords.y;
 
     if (editingShot) {
         plotCircle({x: x, y: y});
@@ -133,10 +144,12 @@ function submitShot(e) {
         }
 
         svg.removeChild(curShot);
-        console.log("editing shot");  
+        console.log("editing shot");
         shotForm.style.display = "none";
         shotForm.reset();
         addingShot = false;
+        editingShot = false;
+        curShot = null;
         return false;
     }
 

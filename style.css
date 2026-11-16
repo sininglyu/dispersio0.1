@@ -1,22 +1,35 @@
+body {
+  font-family: Monaco, "Lucida Console", monospace;
+}
+
 .container {
-    display: flex;
-    background-color: rgb(209, 209, 209);
-    width: 500px;
-    height: 500px;
-    margin: auto
+  display: flex;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.plot-container {
+  background-color: rgb(209, 209, 209);
+  width: 75%;
 }
 
 /* The popup form - hidden by default */
 .form-popup {
   display: none;
-  position: fixed;
-  bottom: 0;
-  right: 15px;
+  position: absolute;
+  width: 180px;
+  background: white;
   border: 3px solid #f1f1f1;
   z-index: 9;
+  font-family: Monaco, "Lucida Console", monospace;
 }
 
 input, button {
+  font: inherit;
   width: 100%;
   padding: 12px;
   margin: 10px 0;
@@ -25,9 +38,5 @@ input, button {
 
 #coords-list {
   background-color: lightcyan;
-  width: 10%;
-}
-
-#shot {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.6);
+  width: 100%;
 }

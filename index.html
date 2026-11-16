@@ -6,13 +6,20 @@
     </head>
 
     <body>
+        <div class="header">
+            <h1>Dispersio v0.1</h1>
+            <h2>by Alex Lyu</h2>
+        </div>
         <div class="container"> 
-            <svg viewBox="-60 -60 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <g>
-                    <line id="x-axis" x1="-60" x2="60" y1="0" y2="0" style="stroke:rgb(30, 144, 255);stroke-width:1"/>
-                    <line id="y-axis" x1="0" y1="-60" x2="0" y2="60" style="stroke:rgb(30, 144, 255);stroke-width:1" />
-                </g>
-            </svg>
+            <div class="plot-container">
+                <svg viewBox="-60 -60 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <line id="x-axis" x1="-60" x2="60" y1="0" y2="0" style="stroke:rgb(30, 144, 255);stroke-width:1"/>
+                        <line id="y-axis" x1="0" y1="-60" x2="0" y2="60" style="stroke:rgb(30, 144, 255);stroke-width:1" />
+                    </g>
+                </svg>
+            </div>
+            <div id="coords-list"></div>
         </div>
         <div>
             <form class="form-popup" id="myForm">
@@ -25,7 +32,7 @@
         </div>
         <div>
             <p id="coords"></p>
-            <div id="coords-list"></div>
+            
         </div>
     </body>
 </html>
