@@ -5,10 +5,29 @@ const svg = document.querySelector("svg");
 const shotForm = document.getElementById("myForm");
 const formContainer = document.getElementsByClassName("form-popup");
 
+
 shotForm.addEventListener("submit", submitShot);
 document.addEventListener("mousemove", displayCoords);
 svg.addEventListener("click", logCoords);
 document.getElementById("btn-cancel").addEventListener("click", closeForm);
+document.getElementById("save-btn").addEventListener("click", ()=>{
+    html2canvas(document.querySelector(".plot-container"), {
+        useCORS: true,
+        scale: 2
+    }).then((canvas) => {
+        const imageURL = canvas.toDataURL("image/png");
+
+        const link = document.createElement("a");
+        link.href = imageURL;
+        link.download = "pattern.png";
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }).catch((err) => {
+        console.error("Failed to save image:", err);
+    });
+});
 
 const coordsList = [];
 const circlesList = [];
@@ -35,7 +54,13 @@ function inBounds(coords) {
 }
 
 function closeForm() {
-    svg.removeChild(circlesList.pop());
+    if (addingShot){
+        svg.removeChild(circlesList.pop());
+    }
+    if (curShot) {
+        curShot.style.stroke = "";
+        curShot.style.strokeWidth = "";
+    }
     shotForm.style.display = "none";
     addingShot = false;
     editingShot = false;
@@ -92,7 +117,6 @@ function logCoords(e) {
 function editShot(e, svgCoords) {
     if (e.target.tagName == "circle" && addingShot) return;
     if (e.target.tagName == "circle" && editingShot) return;
-
 
     editingShot = false;
     curShot = null;

@@ -14,7 +14,7 @@ body {
 
 .plot-container {
   background-color: rgb(209, 209, 209);
-  width: 75%;
+  width: 40%;
 }
 
 /* The popup form - hidden by default */
@@ -38,5 +38,6 @@ input, button {
 
 #coords-list {
   background-color: lightcyan;
-  width: 100%;
+  width: 30%;
+  font-size: 25px;
 }
