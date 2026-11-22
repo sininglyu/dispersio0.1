@@ -26,18 +26,50 @@ body {
   border: 3px solid #f1f1f1;
   z-index: 9;
   font-family: Monaco, "Lucida Console", monospace;
+  border-radius: 15px;
+  flex-direction: column;
+  align-items: center;
 }
 
-input, button {
+input, #btn-submit, #btn-cancel {
   font: inherit;
-  width: 100%;
+  width: 90%;
   padding: 12px;
   margin: 10px 0;
   box-sizing: border-box;
+  border-radius: 15px;
+  border: 1.5px solid;
+}
+
+#btn-submit:hover, #btn-cancel:hover {
+  background: #315cfd;
+  color: white;
 }
 
 #coords-list {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  height: 600px;
   background-color: lightcyan;
-  width: 30%;
+  width: 60%;
   font-size: 25px;
 }
+
+#save-btn {
+  width: 150px;
+  height: 60px;
+  border: 3px solid #315cfd;
+  border-radius: 15px;
+  transition: all 0.3s;
+  cursor: pointer;
+  background: white;
+  font-size: 1.2em;
+  font-weight: 550;
+}
+
+#save-btn:hover {
+  background: #315cfd;
+  color: white;
+}
+

@@ -94,9 +94,6 @@ function displayCoords(e) {
         "X: " + svgCoords.x +
         " Y: " + svgCoords.y
     }
-    else {
-        coordsLog.innerText = " "
-    }
 }
 
 // logging, the meat of this program
@@ -129,7 +126,7 @@ function editShot(e, svgCoords) {
     } 
 
     pendingCoords = svgCoords;
-    shotForm.style.display = "block";
+    shotForm.style.display = "flex";
 
     const offset = 15;
     shotForm.style.left = `${e.pageX + offset}px`;
