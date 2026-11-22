@@ -1,6 +1,0 @@
-{
-  "type": "module",
-  "dependencies": {
-    "html2canvas": "^1.4.1"
-  }
-}
